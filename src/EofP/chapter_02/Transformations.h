@@ -1,6 +1,6 @@
 #pragma once
-// based in work from Alex Stepanov https://www.youtube.com/watch?v=aIHAEYyoTUc&list=PLHxtyCq_WDLXryyw91lahwdtpZsmo4BGD
 
+#include <cmath>
 #include <cstddef>
 #include <utility>
 
@@ -11,5 +11,16 @@ template<typename T>
 T abs(T t) {
     return (t < T{0}) ? -t : t;
 }
+
+template<typename T>
+T euclidean_norm(T x, T y) {
+    return std::sqrt(x * x + y * y);
+}
+
+template<typename T>
+T euclidean_norm(T x, T y, T z) {
+    return std::sqrt(x * x + y * y + z * z);
+}
+
 }
 }
