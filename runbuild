@@ -1,57 +1,57 @@
 #!/bin/bash
 
-check() {
-    if [ $? -ne 0 ]; then
+_check() {
+    if [[ $? -ne 0 ]]; then
         echo "Error processing: $1"
         exit 1
     fi
 }
 
-do_build() {
-    if [ ! -d "build" ]; then
+_do_build() {
+    if [[ ! -d "build" ]]; then
         mkdir build
     fi
     cd build
     echo "Building ..."
     cmake ..
-    check "cmake"
-    make -j4
-    check "make"
+    _check "cmake"
+    make -j8
+    _check "make"
     cd ..
 }
 
-if [ "$#" = "0" ]; then
+_clean() {
+    rm -rf \
+        build \
+        bin \
+        lib \
+        test/bin \
+        test/lib \
+
+}
+
+if [[ "$#" = "0" ]]; then
     # With no parameter: build
-    do_build
-elif [ "$1" = "clean" ]; then
-    rm -rf \
-        build \
-        bin \
-        lib \
-
+    _do_build
+elif [[ "$1" = "clean" ]]; then
+    _clean
     echo "Done."
-elif [ "$1" = "distclean" ]; then
-    rm -rf \
-        build \
-        bin \
-        lib \
-        gtest \
-
-    echo "Done."
-elif [ "$1" = "test" ]; then
-    do_build
+elif [[ "$1" = "test" ]]; then
+    _do_build
     shift
     echo "Testing... "
-    for test in `ls bin/unit_*`
+    for test in `ls test/bin/*`
     do
         $test "$@"
-        check "$test"
+        _check "$test"
     done
-elif [ "$1" = "demo" ]; then
-    do_build
-    echo "Nothing to demo yet"
-elif [ "$1" = "check" ]; then
-    cppcheck --enable=warning,style,unusedFunction src test
+elif [[ "$1" = "ctest" ]]; then
+    shift
+    _do_build
+    cd build
+    ctest $@
+    _check "ctest"
+    cd ..
 else
-    echo "Usage: `basename $0` [test|clean|distclean|demo|check]"
+    echo "Usage: `basename $0` [test|ctest|clean]"
 fi

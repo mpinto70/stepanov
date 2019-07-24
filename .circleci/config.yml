@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/buildpack-deps:19.04
+    steps:
+      - checkout
+      - run:
+          name: Install tools
+          command: sudo apt update && sudo apt install -y g++ cmake
+      - run:
+          name: Build system
+          command: ./runbuild
+      - run:
+          name: Test system
+          command: ./runbuild test
+      - run:
+          name: CPP check system
+          command: ./runbuild check
