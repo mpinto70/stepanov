@@ -47,6 +47,5 @@ TEST(TransformationTest, lemma_2_1) {
         EXPECT_DOUBLE_EQ(e_xyz, euclidean_norm(e_yz, x)) << msg;
     }
 }
-
 }
 }
