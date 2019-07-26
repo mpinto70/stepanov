@@ -7,6 +7,32 @@
 namespace EofP {
 namespace chapter_06 {
 
+template <typename T>
+struct Accumulator {
+    void operator()(const T& t) { t_ += t; }
+    T t_ = {};
+};
+
+TEST(IteratorsTest, for_each_with_vector_int) {
+    const std::vector<int> v = { 21, 22, 23, 24, 25 };
+    EXPECT_EQ(ForEach(begin(v), end(v), Accumulator<int>()).t_, 115);
+}
+
+TEST(IteratorsTest, for_each_with_vector_string) {
+    const std::set<std::string> v = { "21", "22", "23", "24", "25" };
+    EXPECT_EQ(ForEach(begin(v), end(v), Accumulator<std::string>()).t_, "2122232425");
+}
+
+TEST(IteratorsTest, for_each_with_vector_string_reverse) {
+    const std::set<std::string> v = { "21", "22", "23", "24", "25" };
+    EXPECT_EQ(ForEach(rbegin(v), rend(v), Accumulator<std::string>()).t_, "2524232221");
+}
+
+TEST(IteratorsTest, for_each_with_set_string) {
+    const std::set<std::string> v = { "25", "22", "24", "23", "21" };
+    EXPECT_EQ(ForEach(begin(v), end(v), Accumulator<std::string>()).t_, "2122232425");
+}
+
 TEST(IteratorsTest, find_with_vector_int) {
     const std::vector<int> v = { 21, 22, 23, 24, 25 };
     EXPECT_EQ(Find(begin(v), end(v), 23), begin(v) + 2);
