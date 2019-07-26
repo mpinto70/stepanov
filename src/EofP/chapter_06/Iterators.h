@@ -11,5 +11,12 @@ I Find(I f, I l, const typename std::iterator_traits<I>::value_type& x) {
         ++f;
     return f;
 }
+
+template <typename I, typename P>
+I FindIf(I f, I l, P p) {
+    while (f != l && not p(*f))
+        ++f;
+    return f;
+}
 }
 }
