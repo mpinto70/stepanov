@@ -27,5 +27,15 @@ I FindIf(I f, I l, P p) {
         ++f;
     return f;
 }
+
+template <typename I, typename P, typename J>
+J CountIf(I f, I l, P p, J j) {
+    while (f != l) {
+        if (p(*f))
+            ++j;
+        ++f;
+    }
+    return j;
+}
 }
 }

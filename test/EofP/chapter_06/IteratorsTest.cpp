@@ -108,5 +108,18 @@ TEST(IteratorsTest, find_if_with_vector_int) {
 
     EXPECT_EQ(FindIf(begin(v), end(v), IsEqualTo(20)), end(v));
 }
+
+TEST(IteratorsTest, count_if_vector_int) {
+    const std::vector<int> v = { 1, 2, 1, 3, 7 };
+    EXPECT_EQ(CountIf(begin(v), end(v), IsEqualTo(1), 0), 2);
+    EXPECT_EQ(CountIf(begin(v), end(v), IsEqualTo(2), 0), 1);
+    EXPECT_EQ(CountIf(begin(v), end(v), IsEqualTo(7), 0), 1);
+    EXPECT_EQ(CountIf(begin(v), end(v), IsEqualTo(8), 0), 0);
+
+    EXPECT_EQ(CountIf(begin(v), end(v), IsEqualTo(1), 1), 3);
+    EXPECT_EQ(CountIf(begin(v), end(v), IsEqualTo(2), 2), 3);
+    EXPECT_EQ(CountIf(begin(v), end(v), IsEqualTo(7), 3), 4);
+    EXPECT_EQ(CountIf(begin(v), end(v), IsEqualTo(8), 4), 4);
+}
 }
 }
