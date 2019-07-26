@@ -40,17 +40,17 @@ struct Counter {
 };
 
 TEST(IteratorsTest, for_each_to_count_ints) {
-    const std::vector<std::string> v = { "21", "22", "23", "24", "25" };
-    EXPECT_EQ(ForEach(begin(v), end(v), Counter<std::string>()).cnt, 5);
-    const std::vector<std::string> u = { "21", "22", "23", "24", "25", "" };
-    EXPECT_EQ(ForEach(begin(u), end(u), Counter<std::string>()).cnt, 6);
-}
-
-TEST(IteratorsTest, for_each_to_count_strings) {
     const std::vector<int> v = { 21, 22, 23, 24, 25 };
     EXPECT_EQ(ForEach(begin(v), end(v), Counter<int>()).cnt, 5);
     const std::vector<int> u = { 23, 24, 25 };
     EXPECT_EQ(ForEach(begin(u), end(u), Counter<int>()).cnt, 3);
+}
+
+TEST(IteratorsTest, for_each_to_count_strings) {
+    const std::vector<std::string> v = { "21", "22", "23", "24", "25" };
+    EXPECT_EQ(ForEach(begin(v), end(v), Counter<std::string>()).cnt, 5);
+    const std::vector<std::string> u = { "21", "22", "23", "24", "25", "" };
+    EXPECT_EQ(ForEach(begin(u), end(u), Counter<std::string>()).cnt, 6);
 }
 
 TEST(IteratorsTest, find_with_vector_int) {
