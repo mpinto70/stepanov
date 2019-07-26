@@ -121,5 +121,27 @@ TEST(IteratorsTest, count_if_vector_int) {
     EXPECT_EQ(CountIf(begin(v), end(v), IsEqualTo(7), 3), 4);
     EXPECT_EQ(CountIf(begin(v), end(v), IsEqualTo(8), 4), 4);
 }
+
+template <typename I>
+int CountDigits(I i) {
+    int val = *i;
+    int res = 0;
+    while (val != 0) {
+        val /= 10;
+        ++res;
+    }
+    return res;
+}
+
+int Accumulate(int base, int increment) {
+    return base + increment;
+}
+
+TEST(IteratorsTest, reduce_count_digits) {
+    const std::vector<int> v = { 21, 2, 123 };
+    EXPECT_EQ(Reduce(begin(v), end(v), Accumulate, CountDigits<std::vector<int>::const_iterator>), 6);
+    const std::vector<int> u = { 1234, 56789 };
+    EXPECT_EQ(Reduce(begin(u), end(u), Accumulate, CountDigits<std::vector<int>::const_iterator>), 9);
+}
 }
 }

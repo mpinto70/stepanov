@@ -37,5 +37,17 @@ J CountIf(I f, I l, P p, J j) {
     }
     return j;
 }
+
+template <typename I, typename Op, typename F>
+auto Reduce(I f, I l, Op op, F fun) -> std::result_of_t<F(I)> {
+    // precondition f != l
+    std::result_of_t<F(I)> r = fun(f);
+    ++f;
+    while (f != l) {
+        r = op(r, fun(f));
+        ++f;
+    }
+    return r;
+}
 }
 }
