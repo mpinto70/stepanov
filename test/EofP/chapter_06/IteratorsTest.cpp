@@ -33,24 +33,24 @@ TEST(IteratorsTest, for_each_with_set_string) {
     EXPECT_EQ(ForEach(begin(v), end(v), Accumulator<std::string>()).t_, "2122232425");
 }
 
-template <typename T>
 struct Counter {
+    template <typename T>
     void operator()(const T&) { ++cnt; }
     int cnt = 0;
 };
 
 TEST(IteratorsTest, for_each_to_count_ints) {
     const std::vector<int> v = { 21, 22, 23, 24, 25 };
-    EXPECT_EQ(ForEach(begin(v), end(v), Counter<int>()).cnt, 5);
+    EXPECT_EQ(ForEach(begin(v), end(v), Counter()).cnt, 5);
     const std::vector<int> u = { 23, 24, 25 };
-    EXPECT_EQ(ForEach(begin(u), end(u), Counter<int>()).cnt, 3);
+    EXPECT_EQ(ForEach(begin(u), end(u), Counter()).cnt, 3);
 }
 
 TEST(IteratorsTest, for_each_to_count_strings) {
     const std::vector<std::string> v = { "21", "22", "23", "24", "25" };
-    EXPECT_EQ(ForEach(begin(v), end(v), Counter<std::string>()).cnt, 5);
+    EXPECT_EQ(ForEach(begin(v), end(v), Counter()).cnt, 5);
     const std::vector<std::string> u = { "21", "22", "23", "24", "25", "" };
-    EXPECT_EQ(ForEach(begin(u), end(u), Counter<std::string>()).cnt, 6);
+    EXPECT_EQ(ForEach(begin(u), end(u), Counter()).cnt, 6);
 }
 
 TEST(IteratorsTest, find_with_vector_int) {
