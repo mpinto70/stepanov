@@ -137,11 +137,11 @@ int Accumulate(int base, int increment) {
     return base + increment;
 }
 
-TEST(IteratorsTest, reduce_count_digits) {
+TEST(IteratorsTest, reduce__non_zero_count_digits) {
     const std::vector<int> v = { 21, 2, 123 };
-    EXPECT_EQ(Reduce(begin(v), end(v), Accumulate, CountDigits<std::vector<int>::const_iterator>), 6);
+    EXPECT_EQ(ReduceNonEmpty(begin(v), end(v), Accumulate, CountDigits<std::vector<int>::const_iterator>), 6);
     const std::vector<int> u = { 1234, 56789 };
-    EXPECT_EQ(Reduce(begin(u), end(u), Accumulate, CountDigits<std::vector<int>::const_iterator>), 9);
+    EXPECT_EQ(ReduceNonEmpty(begin(u), end(u), Accumulate, CountDigits<std::vector<int>::const_iterator>), 9);
 }
 }
 }

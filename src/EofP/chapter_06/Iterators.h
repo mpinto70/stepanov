@@ -39,7 +39,7 @@ J CountIf(I f, I l, P p, J j) {
 }
 
 template <typename I, typename Op, typename F>
-auto Reduce(I f, I l, Op op, F fun) -> std::result_of_t<F(I)> {
+auto ReduceNonEmpty(I f, I l, Op op, F fun) -> std::result_of_t<F(I)> {
     // precondition f != l
     std::result_of_t<F(I)> r = fun(f);
     ++f;
