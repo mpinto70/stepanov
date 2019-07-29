@@ -5,7 +5,6 @@
 #include <vector>
 
 namespace EofP {
-namespace chapter_06 {
 
 template <typename T>
 struct Accumulator {
@@ -181,6 +180,5 @@ TEST(IteratorsTest, find_adjacent_mismatch_increase_not_found) {
     auto relation = [](int x, int y) { return x < y; };
     const auto expected = end(v);
     EXPECT_EQ(FindAdjacentMismatch(begin(v), end(v), relation), expected);
-}
 }
 }

@@ -3,7 +3,8 @@
 #include <iterator>
 
 namespace EofP {
-namespace chapter_06 {
+
+// Section 6.4
 
 template <typename I, typename P>
 P ForEach(I f, I l, P p) {
@@ -77,6 +78,5 @@ I FindAdjacentMismatch(I f, I l, R r) {
         ++f;
     }
     return f;
-}
 }
 }

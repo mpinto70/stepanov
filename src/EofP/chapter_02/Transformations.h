@@ -5,7 +5,8 @@
 #include <utility>
 
 namespace EofP {
-namespace chapter_02 {
+
+// Section 2.1
 
 template <typename T>
 T Abs(T t) {
@@ -20,6 +21,5 @@ T EuclideanNorm(T x, T y) {
 template <typename T>
 T EuclideanNorm(T x, T y, T z) {
     return std::sqrt(x * x + y * y + z * z);
-}
 }
 }

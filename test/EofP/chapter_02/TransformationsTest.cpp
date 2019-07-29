@@ -6,7 +6,6 @@
 #include <random>
 
 namespace EofP {
-namespace chapter_02 {
 
 TEST(TransformationTest, abs) {
     EXPECT_EQ(Abs(2.3), 2.3);
@@ -46,6 +45,5 @@ TEST(TransformationTest, lemma_2_1) {
         EXPECT_DOUBLE_EQ(e_xyz, EuclideanNorm(e_xz, y)) << msg;
         EXPECT_DOUBLE_EQ(e_xyz, EuclideanNorm(e_yz, x)) << msg;
     }
-}
 }
 }
