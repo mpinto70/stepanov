@@ -49,5 +49,13 @@ auto ReduceNonEmpty(I f, I l, Op op, F fun) -> std::result_of_t<F(I)> {
     }
     return r;
 }
+
+template <typename I, typename Op, typename F>
+auto Reduce(I f, I l, Op op, F fun, const std::result_of_t<F(I)>& z) -> std::result_of_t<F(I)> {
+    if (f == l)
+        return z;
+
+    return ReduceNonEmpty(f, l, op, fun);
+}
 }
 }
