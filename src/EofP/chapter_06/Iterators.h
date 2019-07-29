@@ -57,5 +57,14 @@ auto Reduce(I f, I l, Op op, F fun, const std::result_of_t<F(I)>& z) -> std::res
 
     return ReduceNonEmpty(f, l, op, fun);
 }
+
+template <typename I0, typename I1, typename R>
+std::pair<I0, I1> FindMismatch(I0 f0, I0 l0, I1 f1, I1 l1, R r) {
+    while (f0 != l0 && f1 != l1 && r(*f0, *f1)) {
+        ++f0;
+        ++f1;
+    }
+    return std::make_pair(f0, f1);
+}
 }
 }

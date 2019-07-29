@@ -152,5 +152,21 @@ TEST(IteratorsTest, reduce_count_digits) {
     const std::vector<int> empty;
     EXPECT_EQ(Reduce(begin(empty), end(empty), Accumulate, CountDigits<std::vector<int>::const_iterator>, -7), -7);
 }
+
+TEST(IteratorsTest, find_mismatch_int_equal_to_float) {
+    const std::vector<int> v0 = { 21, 2, 123 };
+    const std::vector<float> v1 = { 21, 2, 124 };
+    auto relation = [](int x, float y) { return static_cast<float>(x) == y; };
+    const auto expected = std::make_pair(begin(v0) + 2, begin(v1) + 2);
+    EXPECT_EQ(FindMismatch(begin(v0), end(v0), begin(v1), end(v1), relation), expected);
+}
+
+TEST(IteratorsTest, find_mismatch_int_greater_than_float) {
+    const std::vector<int> v0 = { 5, 7, 9, 12 };
+    const std::vector<float> v1 = { 4.999, 6.999, 8.999, 12 };
+    auto relation = [](int x, float y) { return static_cast<float>(x) > y; };
+    const auto expected = std::make_pair(begin(v0) + 3, begin(v1) + 3);
+    EXPECT_EQ(FindMismatch(begin(v0), end(v0), begin(v1), end(v1), relation), expected);
+}
 }
 }
