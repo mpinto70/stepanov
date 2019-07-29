@@ -168,5 +168,19 @@ TEST(IteratorsTest, find_mismatch_int_greater_than_float) {
     const auto expected = std::make_pair(begin(v0) + 3, begin(v1) + 3);
     EXPECT_EQ(FindMismatch(begin(v0), end(v0), begin(v1), end(v1), relation), expected);
 }
+
+TEST(IteratorsTest, find_adjacent_mismatch_increase) {
+    const std::vector<int> v = { 5, 7, 9, 9 };
+    auto relation = [](int x, int y) { return x < y; };
+    const auto expected = begin(v) + 3;
+    EXPECT_EQ(FindAdjacentMismatch(begin(v), end(v), relation), expected);
+}
+
+TEST(IteratorsTest, find_adjacent_mismatch_increase_not_found) {
+    const std::vector<int> v = { 5, 7, 9, 10 };
+    auto relation = [](int x, int y) { return x < y; };
+    const auto expected = end(v);
+    EXPECT_EQ(FindAdjacentMismatch(begin(v), end(v), relation), expected);
+}
 }
 }

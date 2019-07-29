@@ -66,5 +66,17 @@ std::pair<I0, I1> FindMismatch(I0 f0, I0 l0, I1 f1, I1 l1, R r) {
     }
     return std::make_pair(f0, f1);
 }
+
+template <typename I, typename R>
+I FindAdjacentMismatch(I f, I l, R r) {
+    if (f == l) return l;
+    typename std::iterator_traits<I>::value_type x = *f;
+    ++f;
+    while (f != l && r(x, *f)) {
+        x = *f;
+        ++f;
+    }
+    return f;
+}
 }
 }
