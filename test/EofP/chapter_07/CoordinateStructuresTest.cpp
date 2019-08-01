@@ -80,9 +80,24 @@ TEST(CoordinateStructuresTest, weight_recursive_for_1_level_left_right) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
-    bc::AddRightSuccessor(root, "right 1");
     bc::AddLeftSuccessor(root, "left 1");
+    bc::AddRightSuccessor(root, "right 1");
 
     EXPECT_EQ(WeightRecursive(root), 1);
+}
+
+TEST(CoordinateStructuresTest, weight_recursive_for_2_levels) {
+    using bc = BifurcateCoordinate<BinaryNode<std::string>>;
+    BinaryNode<std::string> root("root string");
+
+    auto& l = bc::AddLeftSuccessor(root, "l");
+    auto& r = bc::AddRightSuccessor(root, "r");
+
+    bc::AddLeftSuccessor(l, "l l");
+    bc::AddRightSuccessor(l, "l r");
+    bc::AddLeftSuccessor(r, "r l");
+    bc::AddRightSuccessor(r, "r r");
+
+    EXPECT_EQ(WeightRecursive(root), 3);
 }
 }
