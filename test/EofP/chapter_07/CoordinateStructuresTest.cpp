@@ -60,4 +60,29 @@ TEST(CoordinateStructuresTest, build_tree_1_level_int) {
     EXPECT_EQ(*bc::left_successor(root), 2);
     EXPECT_EQ(*bc::right_successor(root), 3);
 }
+
+TEST(CoordinateStructuresTest, weight_recursive_for_empty) {
+    const BinaryNode<std::string> root("root string");
+
+    EXPECT_EQ(WeightRecursive(root), 0);
+}
+
+TEST(CoordinateStructuresTest, weight_recursive_for_1_level_right) {
+    using bc = BifurcateCoordinate<BinaryNode<std::string>>;
+    BinaryNode<std::string> root("root string");
+
+    bc::add_right_successor(root, "right 1");
+
+    EXPECT_EQ(WeightRecursive(root), 1);
+}
+
+TEST(CoordinateStructuresTest, weight_recursive_for_1_level_left_right) {
+    using bc = BifurcateCoordinate<BinaryNode<std::string>>;
+    BinaryNode<std::string> root("root string");
+
+    bc::add_right_successor(root, "right 1");
+    bc::add_left_successor(root, "left 1");
+
+    EXPECT_EQ(WeightRecursive(root), 1);
+}
 }

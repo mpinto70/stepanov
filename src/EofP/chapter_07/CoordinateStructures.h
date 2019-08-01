@@ -60,4 +60,21 @@ struct BifurcateCoordinate {
         node.right = std::make_unique<Node>(std::move(value));
     }
 };
+
+template <typename Node>
+int WeightRecursive(const Node& node) {
+    using BC = BifurcateCoordinate<Node>;
+
+    if (BC::empty(node))
+        return 0;
+
+    int l = 0;
+    int r = 0;
+    if (BC::has_left_successor(node))
+        l = WeightRecursive(BC::left_successor(node));
+    if (BC::has_right_successor(node))
+        r = WeightRecursive(BC::right_successor(node));
+
+    return l + r + 1;
+}
 }
