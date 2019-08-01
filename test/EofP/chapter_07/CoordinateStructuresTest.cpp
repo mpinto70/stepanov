@@ -61,22 +61,24 @@ TEST(CoordinateStructuresTest, build_tree_1_level_int) {
     EXPECT_EQ(*bc::RightSuccessor(root), 3);
 }
 
-TEST(CoordinateStructuresTest, weight_recursive_for_empty) {
+TEST(CoordinateStructuresTest, weight_and_height_recursive_for_empty) {
     const BinaryNode<std::string> root("root string");
 
     EXPECT_EQ(WeightRecursive(root), 0);
+    EXPECT_EQ(HeightRecursive(root), 0);
 }
 
-TEST(CoordinateStructuresTest, weight_recursive_for_1_level_right) {
+TEST(CoordinateStructuresTest, weight_and_height_recursive_for_1_level_right) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
     bc::AddRightSuccessor(root, "right 1");
 
     EXPECT_EQ(WeightRecursive(root), 1);
+    EXPECT_EQ(HeightRecursive(root), 1);
 }
 
-TEST(CoordinateStructuresTest, weight_recursive_for_1_level_left_right) {
+TEST(CoordinateStructuresTest, weight_and_height_recursive_for_1_level_left_right) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
@@ -84,9 +86,10 @@ TEST(CoordinateStructuresTest, weight_recursive_for_1_level_left_right) {
     bc::AddRightSuccessor(root, "right 1");
 
     EXPECT_EQ(WeightRecursive(root), 1);
+    EXPECT_EQ(HeightRecursive(root), 1);
 }
 
-TEST(CoordinateStructuresTest, weight_recursive_for_2_levels) {
+TEST(CoordinateStructuresTest, weight_and_height_recursive_for_2_levels) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
@@ -99,5 +102,6 @@ TEST(CoordinateStructuresTest, weight_recursive_for_2_levels) {
     bc::AddRightSuccessor(r, "r r");
 
     EXPECT_EQ(WeightRecursive(root), 3);
+    EXPECT_EQ(HeightRecursive(root), 2);
 }
 }

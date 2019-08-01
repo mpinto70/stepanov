@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <iterator>
 #include <memory>
 
@@ -78,5 +79,22 @@ int WeightRecursive(const Node& node) {
         r = WeightRecursive(BC::RightSuccessor(node));
 
     return l + r + 1;
+}
+
+template <typename Node>
+int HeightRecursive(const Node& node) {
+    using BC = BifurcateCoordinate<Node>;
+
+    if (BC::empty(node))
+        return 0;
+
+    int l = 0;
+    int r = 0;
+    if (BC::HasLeftSuccessor(node))
+        l = HeightRecursive(BC::LeftSuccessor(node));
+    if (BC::HasRightSuccessor(node))
+        r = HeightRecursive(BC::RightSuccessor(node));
+
+    return std::max(l, r) + 1;
 }
 }
