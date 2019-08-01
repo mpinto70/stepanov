@@ -12,8 +12,8 @@ TEST(CoordinateStructuresTest, build_empty_tree_string) {
     const BinaryNode<std::string> root("root string");
 
     EXPECT_TRUE(bc::empty(root));
-    EXPECT_FALSE(bc::has_left_successor(root));
-    EXPECT_FALSE(bc::has_right_successor(root));
+    EXPECT_FALSE(bc::HasLeftSuccessor(root));
+    EXPECT_FALSE(bc::HasRightSuccessor(root));
 
     EXPECT_EQ(*root, "root string");
 }
@@ -23,8 +23,8 @@ TEST(CoordinateStructuresTest, build_empty_tree_int) {
     const BinaryNode<int> root(1);
 
     EXPECT_TRUE(bc::empty(root));
-    EXPECT_FALSE(bc::has_left_successor(root));
-    EXPECT_FALSE(bc::has_right_successor(root));
+    EXPECT_FALSE(bc::HasLeftSuccessor(root));
+    EXPECT_FALSE(bc::HasRightSuccessor(root));
 
     EXPECT_EQ(*root, 1);
 }
@@ -33,32 +33,32 @@ TEST(CoordinateStructuresTest, build_tree_1_level_string) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
-    bc::add_left_successor(root, "left 1");
-    bc::add_right_successor(root, "right 1");
+    bc::AddLeftSuccessor(root, "left 1");
+    bc::AddRightSuccessor(root, "right 1");
 
     EXPECT_FALSE(bc::empty(root));
-    EXPECT_TRUE(bc::has_left_successor(root));
-    EXPECT_TRUE(bc::has_right_successor(root));
+    EXPECT_TRUE(bc::HasLeftSuccessor(root));
+    EXPECT_TRUE(bc::HasRightSuccessor(root));
 
     EXPECT_EQ(*root, "root string");
-    EXPECT_EQ(*bc::left_successor(root), "left 1");
-    EXPECT_EQ(*bc::right_successor(root), "right 1");
+    EXPECT_EQ(*bc::LefgSuccessor(root), "left 1");
+    EXPECT_EQ(*bc::RightSuccessor(root), "right 1");
 }
 
 TEST(CoordinateStructuresTest, build_tree_1_level_int) {
     using bc = BifurcateCoordinate<BinaryNode<int>>;
     BinaryNode<int> root(1);
 
-    bc::add_left_successor(root, 2);
-    bc::add_right_successor(root, 3);
+    bc::AddLeftSuccessor(root, 2);
+    bc::AddRightSuccessor(root, 3);
 
     EXPECT_FALSE(bc::empty(root));
-    EXPECT_TRUE(bc::has_left_successor(root));
-    EXPECT_TRUE(bc::has_right_successor(root));
+    EXPECT_TRUE(bc::HasLeftSuccessor(root));
+    EXPECT_TRUE(bc::HasRightSuccessor(root));
 
     EXPECT_EQ(*root, 1);
-    EXPECT_EQ(*bc::left_successor(root), 2);
-    EXPECT_EQ(*bc::right_successor(root), 3);
+    EXPECT_EQ(*bc::LefgSuccessor(root), 2);
+    EXPECT_EQ(*bc::RightSuccessor(root), 3);
 }
 
 TEST(CoordinateStructuresTest, weight_recursive_for_empty) {
@@ -71,7 +71,7 @@ TEST(CoordinateStructuresTest, weight_recursive_for_1_level_right) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
-    bc::add_right_successor(root, "right 1");
+    bc::AddRightSuccessor(root, "right 1");
 
     EXPECT_EQ(WeightRecursive(root), 1);
 }
@@ -80,8 +80,8 @@ TEST(CoordinateStructuresTest, weight_recursive_for_1_level_left_right) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
-    bc::add_right_successor(root, "right 1");
-    bc::add_left_successor(root, "left 1");
+    bc::AddRightSuccessor(root, "right 1");
+    bc::AddLeftSuccessor(root, "left 1");
 
     EXPECT_EQ(WeightRecursive(root), 1);
 }

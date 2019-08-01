@@ -33,30 +33,30 @@ private:
 template <typename Node>
 struct BifurcateCoordinate {
     static bool empty(const Node& node) {
-        return not has_left_successor(node) && not has_right_successor(node);
+        return not HasLeftSuccessor(node) && not HasRightSuccessor(node);
     }
-    static bool has_left_successor(const Node& node) {
+    static bool HasLeftSuccessor(const Node& node) {
         return node.left != nullptr;
     }
-    static bool has_right_successor(const Node& node) {
+    static bool HasRightSuccessor(const Node& node) {
         return node.right != nullptr;
     }
-    static const Node& left_successor(const Node& node) {
+    static const Node& LeftSuccessor(const Node& node) {
         return *node.left;
     }
-    static const Node& right_successor(const Node& node) {
+    static const Node& RightSuccessor(const Node& node) {
         return *node.right;
     }
-    static Node& left_successor(Node& node) {
+    static Node& LefgSuccessor(Node& node) {
         return *node.left;
     }
-    static Node& right_successor(Node& node) {
+    static Node& RightSuccessor(Node& node) {
         return *node.right;
     }
-    static void add_left_successor(Node& node, typename Node::Type value) {
+    static void AddLeftSuccessor(Node& node, typename Node::Type value) {
         node.left = std::make_unique<Node>(std::move(value));
     }
-    static void add_right_successor(Node& node, typename Node::Type value) {
+    static void AddRightSuccessor(Node& node, typename Node::Type value) {
         node.right = std::make_unique<Node>(std::move(value));
     }
 };
@@ -70,10 +70,10 @@ int WeightRecursive(const Node& node) {
 
     int l = 0;
     int r = 0;
-    if (BC::has_left_successor(node))
-        l = WeightRecursive(BC::left_successor(node));
-    if (BC::has_right_successor(node))
-        r = WeightRecursive(BC::right_successor(node));
+    if (BC::HasLeftSuccessor(node))
+        l = WeightRecursive(BC::LeftSuccessor(node));
+    if (BC::HasRightSuccessor(node))
+        r = WeightRecursive(BC::RightSuccessor(node));
 
     return l + r + 1;
 }
