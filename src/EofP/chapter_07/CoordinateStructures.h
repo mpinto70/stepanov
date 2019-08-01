@@ -53,11 +53,13 @@ struct BifurcateCoordinate {
     static Node& RightSuccessor(Node& node) {
         return *node.right;
     }
-    static void AddLeftSuccessor(Node& node, typename Node::Type value) {
+    static Node& AddLeftSuccessor(Node& node, typename Node::Type value) {
         node.left = std::make_unique<Node>(std::move(value));
+        return *node.left;
     }
-    static void AddRightSuccessor(Node& node, typename Node::Type value) {
+    static Node& AddRightSuccessor(Node& node, typename Node::Type value) {
         node.right = std::make_unique<Node>(std::move(value));
+        return *node.right;
     }
 };
 
