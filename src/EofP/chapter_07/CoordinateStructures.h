@@ -97,4 +97,25 @@ int HeightRecursive(const Node& node) {
 
     return std::max(l, r) + 1;
 }
+
+enum class Visit {
+    PRE,
+    IN,
+    POST
+};
+
+template <typename Node, typename Proc>
+Proc TraverseNonempty(const Node& node, Proc proc) {
+    using BC = BifurcateCoordinate<Node>;
+
+    proc(Visit::PRE, node);
+    if (BC::HasLeftSuccessor(node))
+        proc = TraverseNonempty(BC::LeftSuccessor(node), proc);
+    proc(Visit::IN, node);
+    if (BC::HasRightSuccessor(node))
+        proc = TraverseNonempty(BC::RightSuccessor(node), proc);
+    proc(Visit::POST, node);
+
+    return proc;
+}
 }
