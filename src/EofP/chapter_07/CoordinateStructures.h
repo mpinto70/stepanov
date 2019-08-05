@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iterator>
 #include <memory>
+#include <utility>
 
 namespace EofP {
 
@@ -48,7 +49,7 @@ struct BifurcateCoordinate {
     static const Node& RightSuccessor(const Node& node) {
         return *node.right;
     }
-    static Node& LefgSuccessor(Node& node) {
+    static Node& LeftSuccessor(Node& node) {
         return *node.left;
     }
     static Node& RightSuccessor(Node& node) {
@@ -118,4 +119,60 @@ Proc TraverseNonempty(const Node& node, Proc proc) {
 
     return proc;
 }
+
+// Section 7.2
+
+template <typename T>
+struct BidirectionalBifurcateCoordinate;
+
+template <typename T>
+struct BidirectionalBinaryNode {
+    using Type = T;
+    explicit BidirectionalBinaryNode(T t)
+          : value(std::move(t)), predecessor(nullptr) {}
+    T& operator*() {
+        return value;
+    }
+    const T& operator*() const {
+        return value;
+    }
+
+private:
+    T value;
+    std::unique_ptr<BidirectionalBinaryNode<T>> left;
+    std::unique_ptr<BidirectionalBinaryNode<T>> right;
+    BidirectionalBinaryNode<T>* predecessor;
+
+    friend class BidirectionalBifurcateCoordinate<BidirectionalBinaryNode<T>>;
+    friend class BifurcateCoordinate<BidirectionalBinaryNode<T>>;
+};
+
+template <typename Node>
+struct BidirectionalBifurcateCoordinate : public BifurcateCoordinate<Node> {
+    static Node& AddLeftSuccessor(Node& node, typename Node::Type value) {
+        using BASE = BifurcateCoordinate<Node>;
+        auto& new_node = BASE::AddLeftSuccessor(node, value);
+        new_node.predecessor = &node;
+        return new_node;
+    }
+    static Node& AddRightSuccessor(Node& node, typename Node::Type value) {
+        using BASE = BifurcateCoordinate<Node>;
+        auto& new_node = BASE::AddRightSuccessor(node, value);
+        new_node.predecessor = &node;
+        return new_node;
+    }
+    static bool HasPredecessor(const Node& node) {
+        return node.predecessor != nullptr;
+    }
+    static bool IsLeftSuccessor(const Node& node) {
+        using BASE = BifurcateCoordinate<Node>;
+        const Node* i = node.predecessor;
+        return BASE::HasLeftSuccessor(*i) && &BASE::LeftSuccessor(*i) == &node;
+    }
+    static bool IsRightSuccessor(const Node& node) {
+        using BASE = BifurcateCoordinate<Node>;
+        const Node* i = node.predecessor;
+        return BASE::HasRightSuccessor(*i) && &BASE::RightSuccessor(*i) == &node;
+    }
+};
 }

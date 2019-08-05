@@ -7,7 +7,7 @@
 
 namespace EofP {
 
-TEST(CoordinateStructuresTest, build_empty_tree_string) {
+TEST(BifurcateCoordinateTest, build_empty_tree_string) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     const BinaryNode<std::string> root("root string");
 
@@ -18,7 +18,7 @@ TEST(CoordinateStructuresTest, build_empty_tree_string) {
     EXPECT_EQ(*root, "root string");
 }
 
-TEST(CoordinateStructuresTest, build_empty_tree_int) {
+TEST(BifurcateCoordinateTest, build_empty_tree_int) {
     using bc = BifurcateCoordinate<BinaryNode<int>>;
     const BinaryNode<int> root(1);
 
@@ -29,7 +29,7 @@ TEST(CoordinateStructuresTest, build_empty_tree_int) {
     EXPECT_EQ(*root, 1);
 }
 
-TEST(CoordinateStructuresTest, build_tree_1_level_string) {
+TEST(BifurcateCoordinateTest, build_tree_1_level_string) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
@@ -41,11 +41,11 @@ TEST(CoordinateStructuresTest, build_tree_1_level_string) {
     EXPECT_TRUE(bc::HasRightSuccessor(root));
 
     EXPECT_EQ(*root, "root string");
-    EXPECT_EQ(*bc::LefgSuccessor(root), "left 1");
+    EXPECT_EQ(*bc::LeftSuccessor(root), "left 1");
     EXPECT_EQ(*bc::RightSuccessor(root), "right 1");
 }
 
-TEST(CoordinateStructuresTest, build_tree_1_level_int) {
+TEST(BifurcateCoordinateTest, build_tree_1_level_int) {
     using bc = BifurcateCoordinate<BinaryNode<int>>;
     BinaryNode<int> root(1);
 
@@ -57,18 +57,18 @@ TEST(CoordinateStructuresTest, build_tree_1_level_int) {
     EXPECT_TRUE(bc::HasRightSuccessor(root));
 
     EXPECT_EQ(*root, 1);
-    EXPECT_EQ(*bc::LefgSuccessor(root), 2);
+    EXPECT_EQ(*bc::LeftSuccessor(root), 2);
     EXPECT_EQ(*bc::RightSuccessor(root), 3);
 }
 
-TEST(CoordinateStructuresTest, weight_and_height_recursive_for_empty) {
+TEST(BifurcateCoordinateTest, weight_and_height_recursive_for_empty) {
     const BinaryNode<std::string> root("root string");
 
     EXPECT_EQ(WeightRecursive(root), 0);
     EXPECT_EQ(HeightRecursive(root), 0);
 }
 
-TEST(CoordinateStructuresTest, weight_and_height_recursive_for_1_level_right) {
+TEST(BifurcateCoordinateTest, weight_and_height_recursive_for_1_level_right) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
@@ -78,7 +78,7 @@ TEST(CoordinateStructuresTest, weight_and_height_recursive_for_1_level_right) {
     EXPECT_EQ(HeightRecursive(root), 1);
 }
 
-TEST(CoordinateStructuresTest, weight_and_height_recursive_for_1_level_left_right) {
+TEST(BifurcateCoordinateTest, weight_and_height_recursive_for_1_level_left_right) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
@@ -89,7 +89,7 @@ TEST(CoordinateStructuresTest, weight_and_height_recursive_for_1_level_left_righ
     EXPECT_EQ(HeightRecursive(root), 1);
 }
 
-TEST(CoordinateStructuresTest, weight_and_height_recursive_for_2_levels) {
+TEST(BifurcateCoordinateTest, weight_and_height_recursive_for_2_levels) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
@@ -113,7 +113,7 @@ struct VisitCounter {
     std::map<typename Node::Type, std::vector<Visit>> count;
 };
 
-TEST(CoordinateStructuresTest, traverse_nonempty_counting_int) {
+TEST(BifurcateCoordinateTest, traverse_nonempty_counting_int) {
     using bc = BifurcateCoordinate<BinaryNode<int>>;
     BinaryNode<int> root(0);
 
@@ -141,7 +141,7 @@ TEST(CoordinateStructuresTest, traverse_nonempty_counting_int) {
     EXPECT_NE(proc.count.find(22), proc.count.end());
 }
 
-TEST(CoordinateStructuresTest, traverse_nonempty_counting_strings) {
+TEST(BifurcateCoordinateTest, traverse_nonempty_counting_strings) {
     using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
 
@@ -167,5 +167,22 @@ TEST(CoordinateStructuresTest, traverse_nonempty_counting_strings) {
     EXPECT_NE(proc.count.find("l l"), proc.count.end());
     EXPECT_NE(proc.count.find("r l"), proc.count.end());
     EXPECT_NE(proc.count.find("r r"), proc.count.end());
+}
+
+TEST(BidirectionalBifurcateCoordinateTest, build_tree_2_levels_string) {
+    using bc = BidirectionalBifurcateCoordinate<BidirectionalBinaryNode<std::string>>;
+    BidirectionalBinaryNode<std::string> root("root string");
+
+    bc::AddLeftSuccessor(root, "left 1");
+    bc::AddRightSuccessor(root, "right 1");
+
+    EXPECT_FALSE(bc::empty(root));
+    EXPECT_TRUE(bc::HasLeftSuccessor(root));
+    EXPECT_TRUE(bc::HasRightSuccessor(root));
+
+    ASSERT_TRUE(bc::HasPredecessor(bc::LeftSuccessor(root)));
+    EXPECT_TRUE(bc::IsLeftSuccessor(bc::LeftSuccessor(root)));
+    ASSERT_TRUE(bc::HasPredecessor(bc::RightSuccessor(root)));
+    EXPECT_TRUE(bc::IsRightSuccessor(bc::RightSuccessor(root)));
 }
 }
