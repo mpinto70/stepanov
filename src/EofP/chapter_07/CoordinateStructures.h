@@ -182,6 +182,12 @@ struct BidirectionalBifurcateCoordinate {
     [[nodiscard]] bool IsRightSuccessor() const {
         return HasPredecessor() && Predecessor().RightSuccessor().node_ == node_;
     }
+    [[nodiscard]] friend bool operator==(const BidirectionalBifurcateCoordinate& x, const BidirectionalBifurcateCoordinate& y) {
+        return x.node_ == y.node_;
+    }
+    [[nodiscard]] friend bool operator!=(const BidirectionalBifurcateCoordinate& x, const BidirectionalBifurcateCoordinate& y) {
+        return x.node_ != y.node_;
+    }
 
 private:
     Node* node_;
@@ -214,5 +220,21 @@ int TraverseStep(Visit& v, I& c) {
             return -1;
     }
     return 0;
+}
+
+template <typename I>
+[[nodiscard]] bool Reachable(I x, I y) {
+    if (x.Empty())
+        return false;
+
+    I root = x;
+    Visit v = Visit::PRE;
+    do {
+        if (x == y)
+            return true;
+        TraverseStep<I>(v, x);
+    } while (x != root || v != Visit::POST);
+
+    return false;
 }
 }

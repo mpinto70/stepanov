@@ -249,4 +249,67 @@ TEST(BidirectionalBifurcateCoordinateTest, traverse_step_string) {
     EXPECT_EQ(*i, "root string");
     EXPECT_EQ(v, Visit::POST);
 }
+
+namespace {
+BidirectionalBinaryNode<std::string> create_tree(const std::string& name = "") {
+    BidirectionalBinaryNode<std::string> root(name + " root");
+    auto& l = root.AddLeftSuccessor(name + " l");
+    auto& r = root.AddRightSuccessor(name + " r");
+
+    l.AddLeftSuccessor(name + " l l");
+    l.AddRightSuccessor(name + " l r");
+    r.AddLeftSuccessor(name + " r l");
+    r.AddRightSuccessor(name + " r r");
+
+    return root;
+}
+}
+
+TEST(BidirectionalBifurcateCoordinateTest, reachable_same_tree) {
+    BidirectionalBinaryNode<std::string> root = create_tree();
+    BidirectionalBifurcateCoordinate<std::string> iroot(root);
+
+    auto x = iroot;
+    Visit v = Visit::PRE;
+    while (v != Visit::POST || x != iroot) {
+        TraverseStep(v, x);
+        EXPECT_TRUE(Reachable(iroot, x)) << *iroot << " --> " << *x;
+        EXPECT_EQ(Reachable(x, iroot), x == iroot) << *x << " --> " << *iroot;
+    }
+}
+
+TEST(BidirectionalBifurcateCoordinateTest, reachable_empty) {
+    BidirectionalBinaryNode<std::string> root = create_tree();
+    BidirectionalBifurcateCoordinate<std::string> iroot(root);
+    BidirectionalBifurcateCoordinate<std::string> empty;
+
+    EXPECT_FALSE(Reachable(iroot, empty));
+    EXPECT_FALSE(Reachable(empty, iroot));
+}
+
+namespace {
+template <typename I>
+void check_unreachable(I i1, I i2) {
+    auto x = i1;
+    Visit v = Visit::PRE;
+    while (v != Visit::POST || x != i1) {
+        TraverseStep(v, x);
+        EXPECT_FALSE(Reachable(i2, x)) << *i2 << " --> " << *x;
+        EXPECT_FALSE(Reachable(x, i2)) << *x << " --> " << *i2;
+    }
+}
+}
+
+TEST(BidirectionalBifurcateCoordinateTest, reachable_different_tree) {
+    BidirectionalBinaryNode<std::string> root1 = create_tree("1");
+    BidirectionalBinaryNode<std::string> root2 = create_tree("2");
+    BidirectionalBifurcateCoordinate<std::string> iroot1(root1);
+    BidirectionalBifurcateCoordinate<std::string> iroot2(root2);
+
+    EXPECT_FALSE(Reachable(iroot1, iroot2));
+    EXPECT_FALSE(Reachable(iroot2, iroot1));
+
+    check_unreachable(iroot1, iroot2);
+    check_unreachable(iroot2, iroot1);
+}
 }
