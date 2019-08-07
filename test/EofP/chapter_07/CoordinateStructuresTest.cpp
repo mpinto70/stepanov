@@ -7,125 +7,141 @@
 
 namespace EofP {
 
-TEST(BifurcateCoordinateTest, build_empty_tree_string) {
-    using bc = BifurcateCoordinate<BinaryNode<std::string>>;
-    const BinaryNode<std::string> root("root string");
+TEST(BifurcateCoordinateTest, build_empty_tree) {
+    const BifurcateCoordinate<std::string> s;
+    EXPECT_TRUE(s.Empty());
 
-    EXPECT_TRUE(bc::empty(root));
-    EXPECT_FALSE(bc::HasLeftSuccessor(root));
-    EXPECT_FALSE(bc::HasRightSuccessor(root));
-
-    EXPECT_EQ(*root, "root string");
+    const BifurcateCoordinate<int> i;
+    EXPECT_TRUE(i.Empty());
 }
 
-TEST(BifurcateCoordinateTest, build_empty_tree_int) {
-    using bc = BifurcateCoordinate<BinaryNode<int>>;
-    const BinaryNode<int> root(1);
+TEST(BifurcateCoordinateTest, build_tree_string_one_element) {
+    BinaryNode<std::string> root("root string");
+    const BifurcateCoordinate<std::string> i(root);
 
-    EXPECT_TRUE(bc::empty(root));
-    EXPECT_FALSE(bc::HasLeftSuccessor(root));
-    EXPECT_FALSE(bc::HasRightSuccessor(root));
+    EXPECT_FALSE(i.Empty());
+    EXPECT_FALSE(i.HasLeftSuccessor());
+    EXPECT_FALSE(i.HasRightSuccessor());
 
-    EXPECT_EQ(*root, 1);
+    EXPECT_EQ(*i, "root string");
+}
+
+TEST(BifurcateCoordinateTest, build_tree_int_one_element) {
+    BinaryNode<int> root(42);
+    const BifurcateCoordinate<int> i(root);
+
+    EXPECT_FALSE(i.Empty());
+    EXPECT_FALSE(i.HasLeftSuccessor());
+    EXPECT_FALSE(i.HasRightSuccessor());
+
+    EXPECT_EQ(*i, 42);
 }
 
 TEST(BifurcateCoordinateTest, build_tree_1_level_string) {
-    using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
+    const BifurcateCoordinate<std::string> i(root);
 
-    bc::AddLeftSuccessor(root, "left 1");
-    bc::AddRightSuccessor(root, "right 1");
+    root.AddLeftSuccessor("left 1");
+    root.AddRightSuccessor("right 1");
 
-    EXPECT_FALSE(bc::empty(root));
-    EXPECT_TRUE(bc::HasLeftSuccessor(root));
-    EXPECT_TRUE(bc::HasRightSuccessor(root));
+    EXPECT_FALSE(i.Empty());
+    EXPECT_TRUE(i.HasLeftSuccessor());
+    EXPECT_TRUE(i.HasRightSuccessor());
 
-    EXPECT_EQ(*root, "root string");
-    EXPECT_EQ(*bc::LeftSuccessor(root), "left 1");
-    EXPECT_EQ(*bc::RightSuccessor(root), "right 1");
+    EXPECT_EQ(*i, "root string");
+    EXPECT_EQ(*i.LeftSuccessor(), "left 1");
+    EXPECT_EQ(*i.RightSuccessor(), "right 1");
 }
 
 TEST(BifurcateCoordinateTest, build_tree_1_level_int) {
-    using bc = BifurcateCoordinate<BinaryNode<int>>;
-    BinaryNode<int> root(1);
+    BinaryNode<int> root(42);
+    const BifurcateCoordinate<int> i(root);
 
-    bc::AddLeftSuccessor(root, 2);
-    bc::AddRightSuccessor(root, 3);
+    root.AddLeftSuccessor(51);
+    root.AddRightSuccessor(69);
 
-    EXPECT_FALSE(bc::empty(root));
-    EXPECT_TRUE(bc::HasLeftSuccessor(root));
-    EXPECT_TRUE(bc::HasRightSuccessor(root));
+    EXPECT_FALSE(i.Empty());
+    EXPECT_TRUE(i.HasLeftSuccessor());
+    EXPECT_TRUE(i.HasRightSuccessor());
 
-    EXPECT_EQ(*root, 1);
-    EXPECT_EQ(*bc::LeftSuccessor(root), 2);
-    EXPECT_EQ(*bc::RightSuccessor(root), 3);
+    EXPECT_EQ(*i, 42);
+    EXPECT_EQ(*i.LeftSuccessor(), 51);
+    EXPECT_EQ(*i.RightSuccessor(), 69);
 }
 
 TEST(BifurcateCoordinateTest, weight_and_height_recursive_for_empty) {
-    const BinaryNode<std::string> root("root string");
+    const BifurcateCoordinate<std::string> i;
 
-    EXPECT_EQ(WeightRecursive(root), 0);
-    EXPECT_EQ(HeightRecursive(root), 0);
+    EXPECT_EQ(WeightRecursive(i), 0);
+    EXPECT_EQ(HeightRecursive(i), 0);
 }
 
-TEST(BifurcateCoordinateTest, weight_and_height_recursive_for_1_level_right) {
-    using bc = BifurcateCoordinate<BinaryNode<std::string>>;
+TEST(BifurcateCoordinateTest, weight_and_height_recursive_for_1_level) {
     BinaryNode<std::string> root("root string");
+    const BifurcateCoordinate<std::string> i(root);
 
-    bc::AddRightSuccessor(root, "right 1");
+    EXPECT_EQ(WeightRecursive(i), 1);
+    EXPECT_EQ(HeightRecursive(i), 1);
+}
 
-    EXPECT_EQ(WeightRecursive(root), 1);
-    EXPECT_EQ(HeightRecursive(root), 1);
+TEST(BifurcateCoordinateTest, weight_and_height_recursive_for_2_levels_right) {
+    BinaryNode<std::string> root("root string");
+    const BifurcateCoordinate<std::string> i(root);
+
+    root.AddRightSuccessor("right 1");
+
+    EXPECT_EQ(WeightRecursive(i), 2);
+    EXPECT_EQ(HeightRecursive(i), 2);
 }
 
 TEST(BifurcateCoordinateTest, weight_and_height_recursive_for_1_level_left_right) {
-    using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
+    const BifurcateCoordinate<std::string> i(root);
 
-    bc::AddLeftSuccessor(root, "left 1");
-    bc::AddRightSuccessor(root, "right 1");
+    root.AddLeftSuccessor("left 1");
+    root.AddRightSuccessor("right 1");
 
-    EXPECT_EQ(WeightRecursive(root), 1);
-    EXPECT_EQ(HeightRecursive(root), 1);
+    EXPECT_EQ(WeightRecursive(i), 3);
+    EXPECT_EQ(HeightRecursive(i), 2);
 }
 
 TEST(BifurcateCoordinateTest, weight_and_height_recursive_for_2_levels) {
-    using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
+    const BifurcateCoordinate<std::string> i(root);
 
-    auto& l = bc::AddLeftSuccessor(root, "l");
-    auto& r = bc::AddRightSuccessor(root, "r");
+    auto& l = root.AddLeftSuccessor("l");
+    auto& r = root.AddRightSuccessor("r");
 
-    bc::AddLeftSuccessor(l, "l l");
-    bc::AddRightSuccessor(l, "l r");
-    bc::AddLeftSuccessor(r, "r l");
-    bc::AddRightSuccessor(r, "r r");
+    l.AddLeftSuccessor("l l");
+    l.AddRightSuccessor("l r");
+    r.AddLeftSuccessor("r l");
+    r.AddRightSuccessor("r r");
 
-    EXPECT_EQ(WeightRecursive(root), 3);
-    EXPECT_EQ(HeightRecursive(root), 2);
+    EXPECT_EQ(WeightRecursive(i), 7);
+    EXPECT_EQ(HeightRecursive(i), 3);
 }
 
-template <typename Node>
+template <typename I>
 struct VisitCounter {
-    void operator()(Visit visit, const Node& t) {
+    void operator()(Visit visit, I t) {
         count[*t].push_back(visit);
     }
-    std::map<typename Node::Type, std::vector<Visit>> count;
+    std::map<typename I::Type, std::vector<Visit>> count;
 };
 
 TEST(BifurcateCoordinateTest, traverse_nonempty_counting_int) {
-    using bc = BifurcateCoordinate<BinaryNode<int>>;
     BinaryNode<int> root(0);
+    const BifurcateCoordinate<int> i(root);
 
-    auto& l = bc::AddLeftSuccessor(root, 1);
-    auto& r = bc::AddRightSuccessor(root, 2);
+    auto& l = root.AddLeftSuccessor(1);
+    auto& r = root.AddRightSuccessor(2);
 
-    bc::AddLeftSuccessor(l, 11);
-    bc::AddRightSuccessor(l, 12);
-    bc::AddLeftSuccessor(r, 21);
-    bc::AddRightSuccessor(r, 22);
+    l.AddLeftSuccessor(11);
+    l.AddRightSuccessor(12);
+    r.AddLeftSuccessor(21);
+    r.AddRightSuccessor(22);
 
-    auto proc = TraverseNonempty(root, VisitCounter<BinaryNode<int>>());
+    auto proc = TraverseNonempty(i, VisitCounter<BifurcateCoordinate<int>>());
     EXPECT_EQ(proc.count.size(), 7);
     const std::vector<Visit> expected_visits = { Visit::PRE, Visit::IN, Visit::POST };
     for (const auto& it : proc.count) {
@@ -142,18 +158,18 @@ TEST(BifurcateCoordinateTest, traverse_nonempty_counting_int) {
 }
 
 TEST(BifurcateCoordinateTest, traverse_nonempty_counting_strings) {
-    using bc = BifurcateCoordinate<BinaryNode<std::string>>;
     BinaryNode<std::string> root("root string");
+    const BifurcateCoordinate<std::string> i(root);
 
-    auto& l = bc::AddLeftSuccessor(root, "l");
-    auto& r = bc::AddRightSuccessor(root, "r");
+    auto& l = root.AddLeftSuccessor("l");
+    auto& r = root.AddRightSuccessor("r");
 
-    bc::AddLeftSuccessor(l, "l l");
-    bc::AddRightSuccessor(l, "l r");
-    bc::AddLeftSuccessor(r, "r l");
-    bc::AddRightSuccessor(r, "r r");
+    l.AddLeftSuccessor("l l");
+    l.AddRightSuccessor("l r");
+    r.AddLeftSuccessor("r l");
+    r.AddRightSuccessor("r r");
 
-    auto proc = TraverseNonempty(root, VisitCounter<BinaryNode<std::string>>());
+    auto proc = TraverseNonempty(i, VisitCounter<BifurcateCoordinate<std::string>>());
     EXPECT_EQ(proc.count.size(), 7);
     const std::vector<Visit> expected_visits = { Visit::PRE, Visit::IN, Visit::POST };
     for (const auto& it : proc.count) {
@@ -170,19 +186,67 @@ TEST(BifurcateCoordinateTest, traverse_nonempty_counting_strings) {
 }
 
 TEST(BidirectionalBifurcateCoordinateTest, build_tree_2_levels_string) {
-    using bc = BidirectionalBifurcateCoordinate<BidirectionalBinaryNode<std::string>>;
     BidirectionalBinaryNode<std::string> root("root string");
+    const BidirectionalBifurcateCoordinate<std::string> i(root);
 
-    bc::AddLeftSuccessor(root, "left 1");
-    bc::AddRightSuccessor(root, "right 1");
+    root.AddLeftSuccessor("left 1");
+    root.AddRightSuccessor("right 1");
 
-    EXPECT_FALSE(bc::empty(root));
-    EXPECT_TRUE(bc::HasLeftSuccessor(root));
-    EXPECT_TRUE(bc::HasRightSuccessor(root));
+    EXPECT_FALSE(i.Empty());
+    EXPECT_TRUE(i.HasLeftSuccessor());
+    EXPECT_TRUE(i.HasRightSuccessor());
 
-    ASSERT_TRUE(bc::HasPredecessor(bc::LeftSuccessor(root)));
-    EXPECT_TRUE(bc::IsLeftSuccessor(bc::LeftSuccessor(root)));
-    ASSERT_TRUE(bc::HasPredecessor(bc::RightSuccessor(root)));
-    EXPECT_TRUE(bc::IsRightSuccessor(bc::RightSuccessor(root)));
+    EXPECT_FALSE(i.HasPredecessor());
+    EXPECT_TRUE(i.LeftSuccessor().HasPredecessor());
+    EXPECT_TRUE(i.LeftSuccessor().IsLeftSuccessor());
+    EXPECT_TRUE(i.RightSuccessor().HasPredecessor());
+    EXPECT_TRUE(i.RightSuccessor().IsRightSuccessor());
+
+    EXPECT_FALSE(i.LeftSuccessor().IsRightSuccessor());
+    EXPECT_FALSE(i.RightSuccessor().IsLeftSuccessor());
+}
+
+TEST(BidirectionalBifurcateCoordinateTest, traverse_step_string) {
+    BidirectionalBinaryNode<std::string> root("root string");
+    BidirectionalBifurcateCoordinate<std::string> i(root);
+
+    root.AddLeftSuccessor("left 1");
+    root.AddRightSuccessor("right 1");
+
+    Visit v = Visit::PRE;
+
+    EXPECT_EQ(*i, "root string");
+
+    EXPECT_EQ(TraverseStep(v, i), 1);
+    EXPECT_EQ(*i, "left 1");
+    EXPECT_EQ(v, Visit::PRE);
+
+    EXPECT_EQ(TraverseStep(v, i), 0);
+    EXPECT_EQ(*i, "left 1");
+    EXPECT_EQ(v, Visit::IN);
+
+    EXPECT_EQ(TraverseStep(v, i), 0);
+    EXPECT_EQ(*i, "left 1");
+    EXPECT_EQ(v, Visit::POST);
+
+    EXPECT_EQ(TraverseStep(v, i), -1);
+    EXPECT_EQ(*i, "root string");
+    EXPECT_EQ(v, Visit::IN);
+
+    EXPECT_EQ(TraverseStep(v, i), 1);
+    EXPECT_EQ(*i, "right 1");
+    EXPECT_EQ(v, Visit::PRE);
+
+    EXPECT_EQ(TraverseStep(v, i), 0);
+    EXPECT_EQ(*i, "right 1");
+    EXPECT_EQ(v, Visit::IN);
+
+    EXPECT_EQ(TraverseStep(v, i), 0);
+    EXPECT_EQ(*i, "right 1");
+    EXPECT_EQ(v, Visit::POST);
+
+    EXPECT_EQ(TraverseStep(v, i), -1);
+    EXPECT_EQ(*i, "root string");
+    EXPECT_EQ(v, Visit::POST);
 }
 }

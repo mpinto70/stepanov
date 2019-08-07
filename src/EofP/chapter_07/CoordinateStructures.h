@@ -17,11 +17,13 @@ struct BinaryNode {
     using Type = T;
     explicit BinaryNode(T t)
           : value(std::move(t)) {}
-    T& operator*() {
-        return value;
+    BinaryNode& AddLeftSuccessor(T t) {
+        left = std::make_unique<BinaryNode>(std::move(t));
+        return *left;
     }
-    const T& operator*() const {
-        return value;
+    BinaryNode& AddRightSuccessor(T t) {
+        right = std::make_unique<BinaryNode>(std::move(t));
+        return *right;
     }
 
 private:
@@ -29,72 +31,66 @@ private:
     std::unique_ptr<BinaryNode<T>> left;
     std::unique_ptr<BinaryNode<T>> right;
 
-    friend class BifurcateCoordinate<BinaryNode<T>>;
+    friend class BifurcateCoordinate<T>;
 };
 
-template <typename Node>
+template <typename T>
 struct BifurcateCoordinate {
-    static bool empty(const Node& node) {
-        return not HasLeftSuccessor(node) && not HasRightSuccessor(node);
+    using Node = BinaryNode<T>;
+    using Type = T;
+    BifurcateCoordinate()
+          : node_(nullptr) {}
+    explicit BifurcateCoordinate(Node& node)
+          : node_(&node) {}
+    T& operator*() const {
+        return node_->value;
     }
-    static bool HasLeftSuccessor(const Node& node) {
-        return node.left != nullptr;
+    [[nodiscard]] bool Empty() const {
+        return node_ == nullptr;
     }
-    static bool HasRightSuccessor(const Node& node) {
-        return node.right != nullptr;
+    [[nodiscard]] bool HasLeftSuccessor() const {
+        return bool(node_->left);
     }
-    static const Node& LeftSuccessor(const Node& node) {
-        return *node.left;
+    [[nodiscard]] bool HasRightSuccessor() const {
+        return bool(node_->right);
     }
-    static const Node& RightSuccessor(const Node& node) {
-        return *node.right;
+    BifurcateCoordinate LeftSuccessor() const {
+        return BifurcateCoordinate(*(node_->left));
     }
-    static Node& LeftSuccessor(Node& node) {
-        return *node.left;
+    BifurcateCoordinate RightSuccessor() const {
+        return BifurcateCoordinate(*(node_->right));
     }
-    static Node& RightSuccessor(Node& node) {
-        return *node.right;
-    }
-    static Node& AddLeftSuccessor(Node& node, typename Node::Type value) {
-        node.left = std::make_unique<Node>(std::move(value));
-        return *node.left;
-    }
-    static Node& AddRightSuccessor(Node& node, typename Node::Type value) {
-        node.right = std::make_unique<Node>(std::move(value));
-        return *node.right;
-    }
+
+private:
+    Node* node_;
 };
 
-template <typename Node>
-int WeightRecursive(const Node& node) {
-    using BC = BifurcateCoordinate<Node>;
-
-    if (BC::empty(node))
+template <typename C>
+int WeightRecursive(C c) {
+    if (c.Empty())
         return 0;
 
     int l = 0;
     int r = 0;
-    if (BC::HasLeftSuccessor(node))
-        l = WeightRecursive(BC::LeftSuccessor(node));
-    if (BC::HasRightSuccessor(node))
-        r = WeightRecursive(BC::RightSuccessor(node));
+    if (c.HasLeftSuccessor())
+        l = WeightRecursive(c.LeftSuccessor());
+    if (c.HasRightSuccessor())
+        r = WeightRecursive(c.RightSuccessor());
 
     return l + r + 1;
 }
 
-template <typename Node>
-int HeightRecursive(const Node& node) {
-    using BC = BifurcateCoordinate<Node>;
-
-    if (BC::empty(node))
+template <typename C>
+int HeightRecursive(C c) {
+    if (c.Empty())
         return 0;
 
     int l = 0;
     int r = 0;
-    if (BC::HasLeftSuccessor(node))
-        l = HeightRecursive(BC::LeftSuccessor(node));
-    if (BC::HasRightSuccessor(node))
-        r = HeightRecursive(BC::RightSuccessor(node));
+    if (c.HasLeftSuccessor())
+        l = HeightRecursive(c.LeftSuccessor());
+    if (c.HasRightSuccessor())
+        r = HeightRecursive(c.RightSuccessor());
 
     return std::max(l, r) + 1;
 }
@@ -105,17 +101,15 @@ enum class Visit {
     POST
 };
 
-template <typename Node, typename Proc>
-Proc TraverseNonempty(const Node& node, Proc proc) {
-    using BC = BifurcateCoordinate<Node>;
-
-    proc(Visit::PRE, node);
-    if (BC::HasLeftSuccessor(node))
-        proc = TraverseNonempty(BC::LeftSuccessor(node), proc);
-    proc(Visit::IN, node);
-    if (BC::HasRightSuccessor(node))
-        proc = TraverseNonempty(BC::RightSuccessor(node), proc);
-    proc(Visit::POST, node);
+template <typename C, typename Proc>
+Proc TraverseNonempty(C c, Proc proc) {
+    proc(Visit::PRE, c);
+    if (c.HasLeftSuccessor())
+        proc = TraverseNonempty(c.LeftSuccessor(), proc);
+    proc(Visit::IN, c);
+    if (c.HasRightSuccessor())
+        proc = TraverseNonempty(c.RightSuccessor(), proc);
+    proc(Visit::POST, c);
 
     return proc;
 }
@@ -130,11 +124,15 @@ struct BidirectionalBinaryNode {
     using Type = T;
     explicit BidirectionalBinaryNode(T t)
           : value(std::move(t)), predecessor(nullptr) {}
-    T& operator*() {
-        return value;
+    BidirectionalBinaryNode& AddLeftSuccessor(T t) {
+        left = std::make_unique<BidirectionalBinaryNode>(std::move(t));
+        left->predecessor = this;
+        return *left;
     }
-    const T& operator*() const {
-        return value;
+    BidirectionalBinaryNode& AddRightSuccessor(T t) {
+        right = std::make_unique<BidirectionalBinaryNode>(std::move(t));
+        right->predecessor = this;
+        return *right;
     }
 
 private:
@@ -143,36 +141,78 @@ private:
     std::unique_ptr<BidirectionalBinaryNode<T>> right;
     BidirectionalBinaryNode<T>* predecessor;
 
-    friend class BidirectionalBifurcateCoordinate<BidirectionalBinaryNode<T>>;
-    friend class BifurcateCoordinate<BidirectionalBinaryNode<T>>;
+    friend class BidirectionalBifurcateCoordinate<T>;
 };
 
-template <typename Node>
-struct BidirectionalBifurcateCoordinate : public BifurcateCoordinate<Node> {
-    static Node& AddLeftSuccessor(Node& node, typename Node::Type value) {
-        using BASE = BifurcateCoordinate<Node>;
-        auto& new_node = BASE::AddLeftSuccessor(node, value);
-        new_node.predecessor = &node;
-        return new_node;
+template <typename T>
+struct BidirectionalBifurcateCoordinate {
+    using Node = BidirectionalBinaryNode<T>;
+    using Type = T;
+    BidirectionalBifurcateCoordinate()
+          : node_(nullptr) {}
+    explicit BidirectionalBifurcateCoordinate(Node& node)
+          : node_(&node) {}
+    T& operator*() const {
+        return node_->value;
     }
-    static Node& AddRightSuccessor(Node& node, typename Node::Type value) {
-        using BASE = BifurcateCoordinate<Node>;
-        auto& new_node = BASE::AddRightSuccessor(node, value);
-        new_node.predecessor = &node;
-        return new_node;
+    [[nodiscard]] bool Empty() const {
+        return node_ == nullptr;
     }
-    static bool HasPredecessor(const Node& node) {
-        return node.predecessor != nullptr;
+    [[nodiscard]] bool HasLeftSuccessor() const {
+        return bool(node_->left);
     }
-    static bool IsLeftSuccessor(const Node& node) {
-        using BASE = BifurcateCoordinate<Node>;
-        const Node* i = node.predecessor;
-        return BASE::HasLeftSuccessor(*i) && &BASE::LeftSuccessor(*i) == &node;
+    [[nodiscard]] bool HasRightSuccessor() const {
+        return bool(node_->right);
     }
-    static bool IsRightSuccessor(const Node& node) {
-        using BASE = BifurcateCoordinate<Node>;
-        const Node* i = node.predecessor;
-        return BASE::HasRightSuccessor(*i) && &BASE::RightSuccessor(*i) == &node;
+    [[nodiscard]] bool HasPredecessor() const {
+        return node_->predecessor != nullptr;
     }
+    BidirectionalBifurcateCoordinate LeftSuccessor() const {
+        return BidirectionalBifurcateCoordinate(*(node_->left));
+    }
+    BidirectionalBifurcateCoordinate RightSuccessor() const {
+        return BidirectionalBifurcateCoordinate(*(node_->right));
+    }
+    BidirectionalBifurcateCoordinate Predecessor() const {
+        return BidirectionalBifurcateCoordinate(*node_->predecessor);
+    }
+    [[nodiscard]] bool IsLeftSuccessor() const {
+        return HasPredecessor() && Predecessor().LeftSuccessor().node_ == node_;
+    }
+    [[nodiscard]] bool IsRightSuccessor() const {
+        return HasPredecessor() && Predecessor().RightSuccessor().node_ == node_;
+    }
+
+private:
+    Node* node_;
 };
+
+template <typename I>
+int TraverseStep(Visit& v, I& c) {
+    switch (v) {
+        case Visit::PRE:
+            if (c.HasLeftSuccessor()) {
+                c = c.LeftSuccessor();
+                return 1;
+            } else {
+                v = Visit::IN;
+                return 0;
+            }
+        case Visit::IN:
+            if (c.HasRightSuccessor()) {
+                v = Visit::PRE;
+                c = c.RightSuccessor();
+                return 1;
+            } else {
+                v = Visit::POST;
+                return 0;
+            }
+        case Visit::POST:
+            if (c.IsLeftSuccessor())
+                v = Visit::IN;
+            c = c.Predecessor();
+            return -1;
+    }
+    return 0;
+}
 }
